@@ -3,6 +3,7 @@
 #include "Utility/SimpleConfig.h"
 #include "Utility/StringUtils.h"
 #include "Math/Quaternion.h"
+#include <iostream>
 
 using namespace SLR;
 
@@ -93,9 +94,18 @@ void QuadEstimatorEKF::UpdateFromIMU(V3F accel, V3F gyro)
   // (replace the code below)
   // make sure you comment it out when you add your own code -- otherwise e.g. you might integrate yaw twice
 
-  float predictedPitch = pitchEst + dtIMU * gyro.y;
-  float predictedRoll = rollEst + dtIMU * gyro.x;
-  ekfState(6) = ekfState(6) + dtIMU * gyro.z;	// yaw
+  // float predictedPitch = pitchEst + dtIMU * gyro.y;
+  // float predictedRoll = rollEst + dtIMU * gyro.x;
+  // ekfState(6) = ekfState(6) + dtIMU * gyro.z;	// yaw
+
+  Quaternion<float> q_t = Quaternion<float>::FromEuler123_RPY(rollEst, pitchEst, ekfState(6));
+  // std::cout << "q_t: " << q_t.Roll() << " " << q_t.Pitch() << " " << q_t.Yaw() << std::endl;
+  Quaternion<float> q_integrated = q_t.IntegrateBodyRate(gyro, dtIMU);
+  // std::cout << "Integrated q_t: " << q_t.Roll() << " " << q_t.Pitch() << " " << q_t.Yaw() << std::endl;
+  float predictedRoll = q_integrated.Roll();
+  float predictedPitch = q_integrated.Pitch();
+  ekfState(6) = q_integrated.Yaw();
+
 
   // normalize yaw to -pi .. pi
   if (ekfState(6) > F_PI) ekfState(6) -= 2.f*F_PI;
