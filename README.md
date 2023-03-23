@@ -1,3 +1,5 @@
+Please find my writeup in this top level folder named: Project_Estimation.pdf
+
 # Estimation Project #
 
 Welcome to the estimation project.  In this project, you will be developing the estimation portion of the controller used in the CPP simulator.  By the end of the project, your simulated quad will be flying with your estimator and your custom controller (from the previous project)!
