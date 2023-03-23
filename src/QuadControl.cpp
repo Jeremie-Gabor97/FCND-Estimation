@@ -201,10 +201,14 @@ float QuadControl::AltitudeControl(float posZCmd, float velZCmd, float posZ, flo
   const float g = 9.81;
   // Accumulate Pos error.
   integratedAltitudeError += (posZCmd - posZ) * dt;
+  // std::cout << "posZDifference: " << posZCmd - posZ << std::endl;
+  // std::cout << "posZCmd: " << posZCmd << " posZ: " << posZ << std::endl;
   // Pos error gets fused into the commanded velocity.
   velZCmd += kpPosZ * (posZCmd - posZ);
   // Contrain commanded Z velocity. Not that both maxAscentRate and maxDescentRate are >=0.
   velZCmd = CONSTRAIN(velZCmd, -maxAscentRate, maxDescentRate);
+  // std::cout << "velZDiff: " << velZCmd - velZ << std::endl;
+  // std::cout << " velZCmd: " << velZCmd << " velZ: " << velZ << std::endl;
   // Vel error and integrated altitude error contribute to commanded Z velocity.
   accelZCmd +=  kpVelZ *  (velZCmd - velZ) + KiPosZ * integratedAltitudeError;
   // Account for gravitational acceleration.
